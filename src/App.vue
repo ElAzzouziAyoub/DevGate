@@ -1,17 +1,12 @@
 <template>
-  <AddProject/>
+  <nav>
+    <router-link to="/addproject">Add project</router-link> |
+    <router-link to="/project" > Project</router-link>
+    <router-link to="/addcompetence">Add Competence</router-link>
+    <router-link to="/competence">Comptence</router-link>
+  </nav>
+  <router-view/>
 </template>
-
-<script>
-import AddProject from '@/components/AddProject.vue'
-
-export default {
-  name: 'App',
-  components: {
-    AddProject
-  }
-}
-</script>
 
 <style>
 #app {
@@ -20,6 +15,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+nav {
+  padding: 30px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

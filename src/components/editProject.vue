@@ -12,7 +12,7 @@
         <label for="">Github Link :</label> <br>
         <input type="text" v-model="link_"> <br>
 
-        <button @click="addProject">Ajouter</button>
+        <button @click="Save">Save</button>
 
 
 
@@ -22,31 +22,30 @@
 </template>
 
 <script setup>
-/*eslint:disable*/
+/*eslint-disable*/
 import { ref } from 'vue';
-import {collection , addDoc} from 'firebase/firestore'
-import { db , auth } from '@/firebase'
+import { doc , updateDoc} from 'firebase/firestore'
+import { useRoute } from 'vue-router'
+import { db } from "@/firebase"
 
 
+const route = useRoute();
 const title_ = ref("");
 const description_ = ref("");
 const stacks_ = ref(["Fullstack","FrontEnd","BackEnd"]);
 const stack_ = ref([]);
 const link_ = ref("");
 
-const addProject = async () =>{
-    await addDoc( collection(db , "projects") , {
-        title : title_.value,
-        description : description_.value,
-        stack : stack_.value ,
-        link : link_.value ,
-        UserUID : auth.currentUser.uid
-    } )
-    title_.value = "";
-    description_.value = "";
-    stack_.value = "";
-    link_.value = "";
+const Save = async () => {
+    await updateDoc( doc(db ,'projects',`${route.params.id}`) , {
+        title : title_.value ,
+        description : description_.value ,
+        stack : stack_.value,
+        link : link_.value
+    })
+
 }
+
 
 
 
