@@ -5,10 +5,10 @@
         <label for="">Name :</label> <br>
         <input type="text" placeholder="title" v-model="name_"> <br>
         <label for="">Level :</label> <br>
-        <select name="" id="">
-            <option value="">Beginner</option>
-            <option value="">Intermediaire</option>
-            <option value="">Expert</option>
+        <select name="" id="" v-model="level_">
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Expert">Expert</option>
         </select> <br> <br>
 
         <button @click="addCompetence">Ajouter</button>

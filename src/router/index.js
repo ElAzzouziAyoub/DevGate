@@ -5,6 +5,7 @@ import AuthForm from '@/components/AuthForm.vue'
 import editProject from '@/components/editProject.vue'
 import CompetencePage from '@/components/CompetencePage.vue'
 import addCompetencePage from '@/components/addCompetencePage.vue'
+import editCompetencePage from '@/components/editCompetencePage.vue'
 
 
 const routes = [
@@ -37,6 +38,12 @@ const routes = [
   {
     path : '/competence',
     component : CompetencePage
+  },
+  {
+    name : 'editCompetencePage',
+    path : '/editcompetence/:id',
+    component : editCompetencePage
+
   }
 ]
 
