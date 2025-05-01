@@ -1,34 +1,67 @@
 <template>
+  <div class="container mx-auto p-6">
+      <!-- Toggle Switch -->
+      <div class="flex items-center justify-between mb-8">
+          <h1 class="text-2xl font-bold text-gray-800">Competences</h1>
+          <label class="flex items-center cursor-pointer">
+              <div class="mr-3 text-gray-700 font-medium">
+                  {{ liste ? 'List View' : 'Gallery View' }}
+              </div>
+              <div class="relative">
+                  <input type="checkbox" v-model="liste" class="sr-only">
+                  <div class="block bg-gray-300 w-14 h-8 rounded-full"></div>
+                  <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform"
+                      :class="{'translate-x-6 bg-blue-500': liste}"></div>
+              </div>
+          </label>
+      </div>
 
-    <div>
-        <label class="switch">
-            <input type="checkbox" v-model="liste">
-            <span class="slider round"></span>
-        </label>
-        <h1>Competences : </h1>
-        <div v-if="liste" id="liste">
-            <div v-for="competence in competences" :key="competence" id="competence_element1">
-                <div>{{ competence.name }}</div>
-                <div id="description">{{ competence.level }}</div>
-                <div><button @click="removeCompetence(competence.id)">Delete</button></div>
-                <div><RouterLink id="link" :to="{ name: 'editCompetencePage', params: { id: competence.id } }">Edit Project</RouterLink></div>
-            </div>
+      <!-- List View -->
+      <div v-if="liste" class="space-y-4 max-w-2xl mx-auto">
+          <div v-for="competence in competences" :key="competence.id" 
+               class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h3 class="text-xl font-semibold text-gray-800">{{ competence.name }}</h3>
+                      <p class="text-gray-600 mt-1">{{ competence.level }}</p>
+                  </div>
+                  <div class="flex space-x-2">
+                      <RouterLink 
+                          :to="{ name: 'editCompetencePage', params: { id: competence.id } }"
+                          class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition">
+                          Edit
+                      </RouterLink>
+                      <button 
+                          @click="removeCompetence(competence.id)"
+                          class="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition">
+                          Delete
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
 
-        </div>
-        <div v-else id="gallery">
-            <div v-for="competence in competences" :key="competence" id="competence_element2">
-                <div>{{ competence.name }}</div>
-                <div id="description">{{ competence.level }}</div>
-                <div><button @click="removeCompetence(competence.id)">Delete</button></div>
-                <div><RouterLink id="link" :to="{ name: 'editCompetencePage', params: { id: competence.id } }">Edit Project</RouterLink></div>
-            </div>
-
-            
-        </div>
-
-    </div>
-
-  
+      <!-- Gallery View -->
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div v-for="competence in competences" :key="competence.id" 
+               class="border border-gray-200 rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+              <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ competence.name }}</h3>
+              <p class="text-gray-600 mb-4">{{ competence.level }}</p>
+              <div class="flex space-x-2 mt-auto">
+                  <RouterLink 
+                      :to="{ name: 'editCompetencePage', params: { id: competence.id } }"
+                      class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition text-sm">
+                      Edit
+                  </RouterLink>
+                  <button 
+                      @click="removeCompetence(competence.id)"
+                      class="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition text-sm">
+                      Delete
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
 </template>
 
 <script setup>
@@ -40,141 +73,37 @@ import { db , auth} from '@/firebase'
 const liste = ref(true);
 const competences = ref([]);
 
-
 //Function that fetches projects
 const fetchCompetences = async () => {
-    onSnapshot(collection(db, "competences"), (querySnapshot) => {
-    const Temp_competences = [];
-    querySnapshot.forEach((doc) => {
-    if (doc.data().UserUID == auth.currentUser.uid ) {
-        Temp_competences.push( {
-            id : doc.id,
-            level : doc.data().level,
-            name : doc.data().name,
-            UserUID : doc.data().UserUID
-        });
-    }
-  });
-  competences.value = Temp_competences;
-})
+  onSnapshot(collection(db, "competences"), (querySnapshot) => {
+      const Temp_competences = [];
+      querySnapshot.forEach((doc) => {
+          if (doc.data().UserUID == auth.currentUser.uid ) {
+              Temp_competences.push({
+                  id: doc.id,
+                  level: doc.data().level,
+                  name: doc.data().name,
+                  UserUID: doc.data().UserUID
+              });
+          }
+      });
+      competences.value = Temp_competences;
+  })
 }
 
 //Function to delete project
 const removeCompetence = async (competenceID) => {
-    await deleteDoc( (doc(db,'competences',competenceID)))
+  await deleteDoc(doc(db, 'competences', competenceID))
 }
 
-onMounted( () => {
-    fetchCompetences();
+onMounted(() => {
+  fetchCompetences();
 })
-
-
-
-
-
-
-
-
 </script>
 
 <style scoped>
-#description{
-    font-size :14px; 
+/* Custom toggle switch styling */
+.dot {
+  transition: all 0.3s ease-in-out;
 }
-#liste{
-    display:flex;
-    flex-direction: column;
-    gap : 10px;
-    align-content: center;
-}
-#competence_element1{
-    font-size: 26px;
-    border : 1px solid black;
-    text-align: left;
-    width : 300px;
-    margin : auto;
-    padding : 10px;
-
-}
-#competence_element2{
-    font-size: 26px;
-    border : 1px solid black;
-    text-align: center;
-    width : 200px;
-    height:200px;
-    margin : auto;
-    padding : 10px;
-
-}
-#gallery{
-    display:flex;
-    flex-wrap: wrap;
-    width : 900px;
-    margin : auto;
-    gap: 10px;
-}
-
- /* The switch - the box around the slider */
- .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-} 
-
 </style>
