@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getAuth} from 'firebase/auth'
 import AddProject from '@/components/AddProject.vue'
 import HomePage from '@/components/HomePage.vue'
 import ProjectPage from '@/components/ProjectPage.vue'
@@ -8,6 +7,11 @@ import editProject from '@/components/editProject.vue'
 import CompetencePage from '@/components/CompetencePage.vue'
 import addCompetencePage from '@/components/addCompetencePage.vue'
 import editCompetencePage from '@/components/editCompetencePage.vue'
+import ProfilePage from '@/components/ProfilePage.vue'
+import ObjectivesPage from '@/components/ObjectivesPage.vue'
+import EditObjectif from '@/components/EditObjectif.vue'
+import ViewObjectives from '@/components/ViewObjectives.vue'
+import UserPage from '@/components/UserPage.vue'
 
 
 const routes = [
@@ -15,8 +19,26 @@ const routes = [
     path : '/',
     name : 'AuthForm',
     component : AuthForm
-  }
-  ,
+  },
+  {
+    path : "/friends",
+    name : 'FriendPage',
+    component : UserPage
+  },
+
+  {
+    path : '/objectives',
+    component: ObjectivesPage
+  },
+  {
+    path : '/viewobjectives',
+    component : ViewObjectives
+
+  },
+  {
+    path : '/editobjectives/:id',
+    component : EditObjectif,
+  },
   {
     path: '/addproject',
     name: 'AddProject',
@@ -50,6 +72,11 @@ const routes = [
     path : '/editcompetence/:id',
     component : editCompetencePage
 
+  },
+  {
+    name : 'ProfilePage',
+    path : '/profile',
+    component : ProfilePage
   }
 ]
 
@@ -58,19 +85,5 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  const auth = getAuth()
-  const user = auth.currentUser
-
-  const isAuthRoute = to.path === '/'
-
-  if (!user && !isAuthRoute) {
-    next('/')
-  } else if (user && isAuthRoute) {
-    next('/home')
-  } else {
-    next()
-  }
-})
 
 export default router

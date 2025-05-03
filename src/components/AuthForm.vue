@@ -1,48 +1,24 @@
 <template>
   <div class="auth-container">
     <div class="auth-card">
-      <h2 class="auth-title">{{ isLogin ? "Connexion" : "Inscription" }}</h2>
-
+      <h2 class="auth-title">{{ isLogin ? 'Connexion' : 'Inscription' }}</h2>
+      
       <div class="input-group">
-        <input
-          v-model="email"
-          type="email"
-          placeholder="Email"
-          class="auth-input"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Mot de passe"
-          class="auth-input"
-        />
+        <input v-model="email" type="email" placeholder="Email" class="auth-input" />
+        <input v-model="password" type="password" placeholder="Mot de passe" class="auth-input" />
 
         <template v-if="!isLogin">
-          <input
-            v-model="firstName"
-            type="text"
-            placeholder="Prénom"
-            class="auth-input"
-          />
-          <input
-            v-model="lastName"
-            type="text"
-            placeholder="Nom"
-            class="auth-input"
-          />
+          <input v-model="firstName" type="text" placeholder="Prénom" class="auth-input" />
+          <input v-model="lastName" type="text" placeholder="Nom" class="auth-input" />
         </template>
       </div>
 
       <button @click="handleSubmit" class="auth-button">
-        {{ isLogin ? "Se connecter" : "S'inscrire" }}
+        {{ isLogin ? 'Se connecter' : 'S\'inscrire' }}
       </button>
 
       <p @click="toggleForm" class="auth-toggle">
-        {{
-          isLogin
-            ? "Pas encore inscrit ? Créer un compte"
-            : "Déjà un compte ? Se connecter"
-        }}
+        {{ isLogin ? 'Pas encore inscrit ? Créer un compte' : 'Déjà un compte ? Se connecter' }}
       </p>
     </div>
   </div>
@@ -62,18 +38,15 @@ const router = useRouter();
 
 const handleSubmit = async () => {
   try {
+
     if (isLogin.value) {
       await login(email.value, password.value);
+      alert("Connecté !");
       router.push("/objectives");
     } else {
-      await signup(
-        email.value,
-        password.value,
-        firstName.value,
-        lastName.value
-      );
+      await signup(email.value, password.value, firstName.value, lastName.value);
       alert("Compte créé !");
-      router.push("/objectives");
+      router.push("/home");
     }
   } catch (err) {
     alert(err.message);
@@ -160,3 +133,6 @@ const toggleForm = () => {
   text-decoration: underline;
 }
 </style>
+
+
+/* */

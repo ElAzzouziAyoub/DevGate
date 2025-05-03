@@ -4,7 +4,7 @@
       <h2>DevGate</h2>
       <router-link to="/home"><h4 style="cursor: pointer">Home</h4></router-link>
       <router-link to="/questions"><h4 style="cursor: pointer">Questions</h4></router-link>
-      <input class="filter" placeholder="Search for projects" v-model="input" />
+
       <div class="notification">
         <button @click="notif"><i class="fa-solid fa-bell"></i></button>
       </div>
@@ -65,12 +65,12 @@ const gotoprofile = () => {
   router.push('/profile') // or wherever
 }
 
-const input = ref('')
 </script>
 
 <style scoped>
 .home {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position : sticky
 }
 
 .signout button {

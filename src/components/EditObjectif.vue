@@ -140,7 +140,7 @@ const handleSubmit= async () => {
     created_at:new Date(),
 
   });
-  router.push("/viewobjectives")
+  router.push("/profile")
 };
 </script>
 <style scoped>

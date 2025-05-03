@@ -87,7 +87,7 @@ function AjouterSubskill(){
 }
 async function handleSubmit() {
   await addDoc(collection(db,"objectives"),{
-    user_id:user_id.value,
+    UserUID:user_id.value,
     titre:title.value,
     description:description.value,
     subskills:subskills.value,
