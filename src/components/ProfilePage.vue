@@ -64,12 +64,7 @@
         >
           Compétences
         </button>
-        <button
-          @click="activeTab = 'followings'"
-          :class="{ active: activeTab === 'followings' }"
-        >
-          Abonnements
-        </button>
+
       </div>
   
       <div class="view-objectif" v-if="activeTab === 'objectives'">
@@ -185,24 +180,6 @@
         </div>
       </div>
   
-      <div class="view-followings" v-if="activeTab === 'followings'">
-        <div v-if="followings.length === 0" class="empty-state">
-          <p>You're not following anyone yet.</p>
-        </div>
-        <div v-else class="followings-grid">
-          <div
-            v-for="(following, index) in followings"
-            :key="index"
-            class="following-card"
-          >
-            <div class="following-avatar" :style="{ backgroundColor: getRandomColor() }">
-              {{ following.name?.[0]?.toUpperCase() || '?' }}
-            </div>
-            <h3>{{ following.name || 'Unknown User' }}</h3>
-            <p>{{ following.email || 'No email' }}</p>
-          </div>
-        </div>
-      </div>
     </div>
   </template>
   
@@ -778,5 +755,202 @@
   /* Projects view */
   .view-projects {
     max-width: 800px;}
+  /* Conteneur principal */
+.view-projects, .view-skills, .view-followings {
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- Projets --- */
+
+.project-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+}
+
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1a202c;
+  margin: 0;
+}
+
+.project-meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.meta-item {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.status {
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.status.pending {
+  background-color: #fefcbf;
+  color: #b7791f;
+}
+
+.status.completed {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.status.in_progress {
+  background-color: #bee3f8;
+  color: #3182ce;
+}
+
+.project-description {
+  color: #4a5568;
+  margin: 1rem 0;
+}
+
+/* Tasks */
+
+.tasks-container {
+  margin-top: 1rem;
+}
+
+.tasks-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.tasks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background-color: #edf2f7;
+  color: #2d3748;
+  transition: background-color 0.2s;
+}
+
+.task-item.completed {
+  background-color: #d4f5dc;
+  color: #2f855a;
+  text-decoration: line-through;
+}
+
+/* --- Compétences --- */
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.skill-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.skill-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+.skill-level {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  gap: 0.5rem;
+}
+
+.level-bar {
+  height: 8px;
+  background-color: #3182ce;
+  border-radius: 4px;
+  flex-grow: 1;
+  transition: width 0.3s;
+}
+
+.skill-card p {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+/* --- Followings --- */
+
+.empty-state {
+  text-align: center;
+  font-size: 1rem;
+  color: #718096;
+}
+
+.followings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.following-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.following-avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+  background-color: #718096;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.following-card h3 {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.following-card p {
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
   
     </style>

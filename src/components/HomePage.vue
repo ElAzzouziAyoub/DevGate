@@ -5,6 +5,9 @@
       <p>Discover and manage your projects effectively.</p>
     </div>
 
+    
+
+
     <div class="projects-grid">
       <div v-for="(project, index) in projects" :key="index" class="project-card">
         <div class="card-image">

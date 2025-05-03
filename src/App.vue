@@ -5,6 +5,16 @@
       <router-link to="/home"><h4 style="cursor: pointer">Home</h4></router-link>
       <router-link to="/questions"><h4 style="cursor: pointer">Questions</h4></router-link>
 
+      <div class="profile">
+        <router-link to="/friends"> <h4 style="cursor: pointer">Users</h4></router-link>
+      </div>
+
+      <div class="profile">
+        <router-link to="/create"> <h4 style="cursor: pointer">Create</h4></router-link>
+      </div>
+
+
+
       <div class="notification">
         <button @click="notif"><i class="fa-solid fa-bell"></i></button>
       </div>

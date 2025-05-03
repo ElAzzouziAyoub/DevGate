@@ -124,60 +124,80 @@
   </template>
   
   <script setup>
+  /*eslint-disable*/
   import { ref, computed, onMounted, nextTick } from 'vue'
   import { getAuth, onAuthStateChanged } from 'firebase/auth'
   import {
-    getFirestore, collection, getDocs,
-    query, where, updateDoc, doc
+    getFirestore,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    where,
+    updateDoc,
+    writeBatch
   } from 'firebase/firestore'
   import Chart from 'chart.js/auto'
   
   const auth = getAuth()
   const db = getFirestore()
   
-  const currentUser = ref(null)
-  const users = ref([])
-  const searchQuery = ref('')
-  const showFriends = ref(false)
-  const selectedUser = ref(null)
-  const progressChart = ref(null)
-  let progressChartInstance = null
+  // Utilisateur courant et son profil Firestore
+  const currentUser    = ref(null)
+  const currentProfile = ref({})
   
-  // --- Charger utilisateurs + leurs items ---
+  // Liste des autres utilisateurs
+  const users        = ref([])
+  const searchQuery  = ref('')
+  const showFriends  = ref(false)
+  const selectedUser = ref(null)
+  
+  // Réf pour le chart
+  const progressChart         = ref(null)
+  let progressChartInstance   = null
+  
+  // Charger Auth + profil + utilisateurs
   onMounted(() => {
     onAuthStateChanged(auth, async u => {
       if (!u) return
-      currentUser.value = u
+      currentUser.value    = u
+      // Charger les données Firestore du current
+      const snap = await getDoc(doc(db, 'users', u.uid))
+      currentProfile.value = snap.exists() ? snap.data() : {}
       await loadUsers()
     })
   })
   
+  // Récupérer tous les users sauf current + leurs items + followings
   async function loadUsers() {
-    const snap = await getDocs(collection(db, 'users'))
-    const all = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-      .filter(u => u.id !== currentUser.value.uid)
+    const snaps = await getDocs(collection(db, 'users'))
+    const all   = snaps.docs.map(d => ({ id: d.id, ...d.data() }))
+                     .filter(u => u.id !== currentUser.value.uid)
   
     users.value = await Promise.all(all.map(async u => {
-      // récupérer followings pour isFollower
       const data = { ...u, followings: u.followings || [] }
-      const [objs, projs, skills] = await Promise.all([
-        getDocs(query(collection(db,'objectives'), where('user_id','==',u.id))),
-        getDocs(query(collection(db,'projects'), where('user_id','==',u.id))),
-        getDocs(query(collection(db,'skills'), where('user_id','==',u.id)))
+  
+      // Charger items
+      const [oSnap, pSnap, sSnap] = await Promise.all([
+        getDocs(query(collection(db, 'objectives'), where('UserUID', '==', u.id))),
+        getDocs(query(collection(db, 'projects'),   where('UserUID', '==', u.id))),
+        getDocs(query(collection(db, 'competences'),     where('UserUID', '==', u.id)))
       ])
+  
       return {
         ...data,
-        objectives: objs.docs.map(d=>({id:d.id,...d.data()})),
-        projects:  projs.docs.map(d=>({id:d.id,...d.data()})),
-        skills:    skills.docs.map(d=>({id:d.id,...d.data()})),
-        objectivesCount: objs.size,
-        projectsCount:   projs.size,
-        skillsCount:     skills.size
+        objectives: oSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+        projects:   pSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+        skills:     sSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+        objectivesCount: oSnap.size,
+        projectsCount:   pSnap.size,
+        skillsCount:     sSnap.size
       }
     }))
   }
   
-  // --- Filtrage selon search & friends/s_all ---
+  // Filtrage selon recherche et amis seulement
   const filteredUsers = computed(() => {
     let list = users.value
     if (showFriends.value) {
@@ -193,30 +213,60 @@
     return list
   })
   
-  // --- Relations ---
+  // Helpers de relation
   function isFollowing(id) {
-    return currentUser.value?.followings?.includes(id) || false
+    return (currentProfile.value.followings || []).includes(id)
   }
+  
   function isFollower(id) {
     const other = users.value.find(u => u.id === id)
-    return other?.followings?.includes(currentUser.value.uid) || false
+    return (other?.followings || []).includes(currentUser.value.uid)
   }
+  
   function isFriend(id) {
     return isFollowing(id) && isFollower(id)
   }
   
-  // --- Follow/unfollow ---
+  // Suivre / se désabonner
   async function toggleFollow(u) {
-    const me = doc(db,'users',currentUser.value.uid)
-    const arr = currentUser.value.followings?.slice()||[]
-    const idx = arr.indexOf(u.id)
+    const meRef = doc(db, 'users', currentUser.value.uid)
+    const arr   = (currentProfile.value.followings || []).slice()
+    const idx   = arr.indexOf(u.id)
     if (idx === -1) arr.push(u.id)
-    else arr.splice(idx,1)
-    await updateDoc(me,{ followings: arr })
-    currentUser.value.followings = arr
+    else arr.splice(idx, 1)
+  
+    await updateDoc(meRef, { followings: arr })
+    // mettre à jour le profil local
+    currentProfile.value.followings = arr
   }
   
-  // --- Voir modal profil ---
+  // Accepter mutuellement (invitations)
+  async function acceptInvitation(u) {
+    const meRef  = doc(db, 'users', currentUser.value.uid)
+    const youRef = doc(db, 'users', u.id)
+  
+    const myArr  = [...(currentProfile.value.followings || [])]
+    const yourArr = [...(u.followings || [])]
+  
+    if (!myArr.includes(u.id))    myArr.push(u.id)
+    if (!yourArr.includes(currentUser.value.uid)) yourArr.push(currentUser.value.uid)
+  
+    const batch = writeBatch(db)
+    batch.update(meRef,  { followings: myArr })
+    batch.update(youRef, { followings: yourArr })
+    await batch.commit()
+  
+    // recharger local
+    const [meSnap, youSnap] = await Promise.all([
+      getDoc(meRef),
+      getDoc(youRef)
+    ])
+    currentProfile.value.followings = meSnap.data().followings
+    const idx = users.value.findIndex(x => x.id === u.id)
+    if (idx !== -1) users.value[idx].followings = youSnap.data().followings
+  }
+  
+  // Modal profil
   function viewProfile(u) {
     if (!isFriend(u.id)) return
     selectedUser.value = u
@@ -230,37 +280,43 @@
     }
   }
   
-  // --- Graphique de progression moyenne ---
+  // Init Chart
   function initProgressChart() {
     const u = selectedUser.value
     if (!u || !progressChart.value) return
+  
     if (progressChartInstance) progressChartInstance.destroy()
     const ctx = progressChart.value.getContext('2d')
-    const objAvg = u.objectives.length
-      ? u.objectives.reduce((sum,o)=>sum+o.progression,0)/u.objectives.length*100
-      : 0
-    const skillAvg = u.skills.length
-      ? u.skills.reduce((sum,s)=>sum+s.level,0)/u.skills.length
-      : 0
+  
+    const objAvg   = u.objectives.length ? u.objectives.reduce((sum, o) => sum + o.progression, 0) / u.objectives.length * 100 : 0
+    const skillAvg = u.skills.length     ? u.skills.reduce((sum, s) => sum + s.level, 0)       / u.skills.length       : 0
+  
     progressChartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Objectifs','Compétences'],
-        datasets:[{
+        datasets: [{
           label: 'Moyenne (%)',
           data: [Math.round(objAvg), Math.round(skillAvg)],
-          backgroundColor:['#4299e1','#48bb78'],
-          borderColor:    ['#2b6cb0','#2f855a'],
+          backgroundColor: ['#4299e1','#48bb78'],
+          borderColor: ['#2b6cb0','#2f855a'],
           borderWidth: 1
         }]
       },
-      options:{
-        responsive:true,
-        scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback: v=>v+'%' } } }
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { callback: v => v + '%' }
+          }
+        }
       }
     })
   }
   </script>
+  
   
   <style scoped>
   .users-page {

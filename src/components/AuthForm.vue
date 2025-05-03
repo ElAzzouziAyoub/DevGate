@@ -42,7 +42,7 @@ const handleSubmit = async () => {
     if (isLogin.value) {
       await login(email.value, password.value);
       alert("Connecté !");
-      router.push("/objectives");
+      router.push("/home");
     } else {
       await signup(email.value, password.value, firstName.value, lastName.value);
       alert("Compte créé !");

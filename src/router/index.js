@@ -12,6 +12,7 @@ import ObjectivesPage from '@/components/ObjectivesPage.vue'
 import EditObjectif from '@/components/EditObjectif.vue'
 import ViewObjectives from '@/components/ViewObjectives.vue'
 import UserPage from '@/components/UserPage.vue'
+import CreatePage from '@/components/CreatePage.vue'
 
 
 const routes = [
@@ -20,6 +21,11 @@ const routes = [
     name : 'AuthForm',
     component : AuthForm
   },
+  {
+    path : '/create',
+    component : CreatePage
+  }
+  ,
   {
     path : "/friends",
     name : 'FriendPage',
