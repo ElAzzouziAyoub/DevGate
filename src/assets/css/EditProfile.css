@@ -1,0 +1,30 @@
+.secondOne {
+    transform: translateY(70px);
+}
+
+.togglePassField {
+    padding: 5px;
+}
+
+.ForEdit {
+    position: relative;
+}
+
+.cancelEditBtn {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    border-radius: 15px;
+}
+
+.cancelEditBtn:hover {
+    background-color: rgb(103, 103, 248);
+    color: white;
+}
+
+.cancelEditBtn:active {
+    background-color: rgb(65, 65, 255);
+}

@@ -31,7 +31,6 @@ export const signup = async (email, password, firstName, lastName) => {
         color: "#ffffff",  // Valeur par défaut pour color
         first_name: firstName || "Prénom non défini", // Assurez-vous de ne pas envoyer undefined
         last_name: lastName || "Nom non défini",  // Assurez-vous de ne pas envoyer undefined
-        globale_score: 0,  // Valeur par défaut pour globale_score
         name: `${firstName} ${lastName}`,  // Le nom complet de l'utilisateur
         userUID: user.uid,  // UID de l'utilisateur provenant de Firebase
         following : [],

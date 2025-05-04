@@ -1,6 +1,7 @@
 <template>
+  <DevGateNavBar></DevGateNavBar>
   <div class="users-page">
-    <h1>Réseau d'utilisateurs</h1>
+    <h1>User Page</h1>
 
     <!-- Barre de recherche et switch amis/tous -->
     <div class="controls">
@@ -11,7 +12,7 @@
         class="search-bar"
       />
       <button @click="showFriends = !showFriends" class="toggle-view">
-        {{ showFriends ? 'Voir tous les utilisateurs' : 'Voir mes amis' }}
+        {{ showFriends ? 'See all users' : 'See my friends' }}
       </button>
     </div>
 
@@ -19,23 +20,31 @@
     <div class="users-grid">
       <div v-for="u in filteredUsers" :key="u.id" class="user-card">
         <div class="card-header">
-          <div class="avatar" :style="{ backgroundColor: u.color || '#4299e1' }">
-            {{ u.name?.[0]?.toUpperCase() || '?' }}
+          <div class="avatar-container">
+            <img
+              v-if="u?.profImage"
+              :src="u.profImage"
+              alt="Photo de profil"
+              class="profile-avatar"
+            />
+            <div v-else class="default-avatar">
+              ?
+            </div>
           </div>
           <div class="info">
             <h2>{{ u.name }}</h2>
             <div class="connection-status">
-              <span v-if="isFriend(u.id)" class="friend-badge">Ami↔</span>
-              <span v-else-if="isFollowing(u.id)" class="following-badge">Abonné →</span>
-              <span v-else-if="isFollower(u.id)" class="follower-badge">← Abonné</span>
+              <span v-if="isFriend(u.id)" class="friend-badge">Friend↔</span>
+              <span v-else-if="isFollowing(u.id)" class="following-badge">Following →</span>
+              <span v-else-if="isFollower(u.id)" class="follower-badge">← Following you</span>
             </div>
           </div>
         </div>
 
         <div class="stats">
-          <span>{{ u.objectivesCount }} objectifs</span>
-          <span>{{ u.projectsCount }} projets</span>
-          <span>{{ u.skillsCount }} compétences</span>
+          <span>{{ u.objectivesCount }} Objectives</span>
+          <span>{{ u.projectsCount }} Projects</span>
+          <span>{{ u.skillsCount }} Compétences</span>
         </div>
 
         <div class="actions">
@@ -43,14 +52,14 @@
             @click="toggleFollow(u)"
             :class="isFollowing(u.id) ? 'unfollow-btn' : 'follow-btn'"
           >
-            {{ isFollowing(u.id) ? 'Se désabonner' : 'Suivre' }}
+            {{ isFollowing(u.id) ? 'Unfollow' : 'Follow' }}
           </button>
           <button
             @click="viewProfile(u)"
             class="view-btn"
             :disabled="!isFriend(u.id)"
           >
-            Voir profil
+            Check profil
           </button>
         </div>
       </div>
@@ -80,13 +89,13 @@
         <div class="modal-body">
           <!-- Graphique de progression -->
           <div class="chart-container">
-            <h3>Progression globale</h3>
+            <h3>GLobal progression </h3>
             <canvas ref="progressChart"></canvas>
           </div>
 
           <!-- Sections récentes -->
           <div class="section">
-            <h3>Objectifs récents</h3>
+            <h3>Recent objectives</h3>
             <ul>
               <li v-for="o in selectedUser.objectives.slice(0,3)" :key="o.id">
                 {{ o.titre }} — {{ (o.progression*100).toFixed(0) }}%
@@ -96,7 +105,7 @@
           </div>
 
           <div class="section">
-            <h3>Projets récents</h3>
+            <h3>Recent projects</h3>
             <ul>
               <li v-for="p in selectedUser.projects.slice(0,3)" :key="p.id">
                 {{ p.title }} — {{ p.status }}
@@ -106,7 +115,7 @@
           </div>
 
           <div class="section">
-            <h3>Compétences récentes</h3>
+            <h3>Recent compétences </h3>
             <ul>
               <li v-for="s in selectedUser.skills.slice(0,3)" :key="s.id">
                 {{ s.name }} — {{ s.level }}%
@@ -125,6 +134,7 @@
 <script setup>
 /*eslint-disable*/
 import { ref, computed, onMounted, nextTick } from 'vue'
+import DevGateNavBar from './DevGateNavBar.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import {
   getFirestore,
@@ -371,10 +381,27 @@ function closeModal() {
   .card-header {
     display:flex; align-items:center; gap:1rem; margin-bottom:1rem;
   }
-  .avatar {
-    width:50px;height:50px;border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-weight:600; font-size:1.25rem;
+  
+  .avatar-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .default-avatar {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #666;
   }
   .info h2 { margin:0; font-size:1.1rem; }
   .info p { margin:.25rem 0 0; font-size:.85rem; color:#718096; }

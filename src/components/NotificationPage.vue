@@ -1,4 +1,5 @@
 <template>
+  <DevGateNavBar></DevGateNavBar>
     <div class="notifications-page bg-white text-gray-800 p-8 max-w-4xl mx-auto">
       <div class="header text-center mb-8">
         <h1 class="text-3xl font-semibold text-indigo-600">Your Notifications</h1>
@@ -29,6 +30,7 @@
   </template>
   
   <script setup>
+  import DevGateNavBar from './DevGateNavBar.vue'
   import { ref, onMounted } from 'vue'
   import { collection, query, where, getDocs } from 'firebase/firestore'
   import { getAuth } from 'firebase/auth'

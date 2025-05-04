@@ -1,4 +1,8 @@
 <template>
+
+  <DevGateNavBar ></DevGateNavBar>
+
+
   <div class="home">
     <div class="explore-section">
       <h1>Explore Projects</h1>
@@ -31,10 +35,12 @@
 
   <script setup>
   /*eslint-disable*/
+  import DevGateNavBar from "./DevGateNavBar.vue";
   import {ref,onMounted} from "vue";
   import { collection, getDocs, getFirestore, doc, updateDoc, increment, onSnapshot } from "firebase/firestore";
   import {db} from "../firebase"
   import { useRouter } from "vue-router"
+import { onAuthStateChanged } from "firebase/auth";
   const router = useRouter();
   const projects=ref([]);
   const clicked=ref(false);

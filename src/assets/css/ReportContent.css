@@ -1,0 +1,89 @@
+.adminBar {
+    margin: 10px;
+    border-bottom: 1px solid gray;
+}
+
+.ModeSelected {
+    background-color: rgb(0, 0, 255);
+    color: white;
+}
+
+.ModeSelected:hover {
+    color: white;
+    background-color: rgb(84, 84, 255);
+}
+
+.adminBar button{
+    padding: 5px;
+    border: 1px solid transparent;
+}
+
+.ModeNotSelected {
+    background-color: white;
+    color: black;
+}
+
+.ModeNotSelected:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.ModeNotSelected:active {
+    color: white;
+    background-color: blue;
+}
+
+.reportedDiscussions, .reportedReplies {
+    margin: 10px;
+    padding: 10px;
+}
+
+.reportedDiscussions > div, .reportedReplies > div {
+    margin-bottom: 10px;
+    border-bottom: 1px solid gray;
+    padding: 5px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+.pubDate {
+    position: absolute;
+    right: 5px;
+    transform: translateY(-20px);
+    font-size: 14px;
+    color: rgb(77, 77, 77);
+}
+
+.reportedDiscussions > div button, .RepBtns {
+    position: absolute;
+    right: 5px;
+    transform: translateY(-20px);
+}
+
+.ReportNum {
+    font-size: 14px;
+    font-style: italic;
+    color: royalblue;
+}
+
+.RepBtns {
+    display: flex;
+    gap: 20px;
+}
+
+.reportedDiscussions > div button, .RepBtns button {
+    background-color: white;
+    color: blue;
+    border: 1px solid gray;
+    padding: 3px;
+}
+
+.reportedDiscussions > div button:hover, .RepBtns button:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.reportedDiscussions > div button:active, .RepBtns button:active {
+    color: white;
+    background-color: blue;
+}

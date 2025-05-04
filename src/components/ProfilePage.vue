@@ -1,46 +1,51 @@
 <template>
+  <DevGateNavBar ></DevGateNavBar>
+  
     <div class="profile-page">
-      <div class="profile-header" :style="{ backgroundColor: color }">
-        <div class="color-picker">
-          <h2 class="avatar" :style="{ color: contrastColor }">
-            {{ userInitial }}
-          </h2>
-          <input v-model="color" type="color" @change="changeColor" />
+      <div class="avatar-container">
+          <img
+            v-if="data?.profImage"
+            :src="data.profImage"
+            alt="Photo de profil"
+            class="profile-avatar"
+          />
+          <div v-else class="default-avatar">
+            ?
+          </div>
         </div>
-      </div>
   
       <div class="profile-info">
         <h2>{{ data?.name || "Nom d'utilisateur" }}</h2>
         <p>Email: {{ user?.email || "Email non disponible" }}</p>
-        <p>Créé le: {{ formatDate(user?.metadata?.creationTime) }}</p>
+        <p>Created at: {{ formatDate(user?.metadata?.creationTime) }}</p>
       </div>
   
-      <div class="stats-container">
-        <div class="stats-card">
-          <h3>Objectifs</h3>
+      <div class="stats-contain">
+        <div class="stats">
+          <h3>Objectives</h3>
           <p>{{ mes_objectifs.length }}</p>
         </div>
-        <div class="stats-card">
-          <h3>Projets</h3>
+        <div class="stats">
+          <h3>Projects</h3>
           <p>{{ mes_projets.length }}</p>
         </div>
-        <div class="stats-card">
+        <div class="stats">
           <h3>Compétences</h3>
           <p>{{ mes_competences.length }}</p>
         </div>
-        <div class="stats-card">
-          <h3>Abonnements</h3>
+        <div class="stats">
+          <h3>Friends</h3>
           <p>{{ followingsCount }}</p>
         </div>
       </div>
   
       <div class="charts-container">
         <div class="chart-card">
-          <h3>Progression des objectifs</h3>
+          <h3>Objectives Progression</h3>
           <canvas ref="objectivesChart"></canvas>
         </div>
         <div class="chart-card">
-          <h3>Répartition des compétences</h3>
+          <h3>Competence Repartitions</h3>
           <canvas ref="skillsChart"></canvas>
         </div>
       </div>
@@ -63,6 +68,12 @@
           :class="{ active: activeTab === 'skills' }"
         >
           Compétences
+        </button>
+        <button
+          @click="activeTab = 'discussions'"
+          :class="{ active: activeTab === 'discussions' }"
+        >
+          Discussions
         </button>
 
       </div>
@@ -182,6 +193,55 @@
           </div>
         </div>
       </div>
+
+      <div class="view-discussion" v-if="activeTab === 'discussions'">
+          <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-value">
+              {{ numDiscussions }}
+            </span>
+            <span class="stat-label">Discussions</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ numReplies }}</span>
+            <span class="stat-label">Replies</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ data?.numUpvotes || 0 }}</span>
+            <span class="stat-label">Upvotes</span>
+          </div>
+        </div>
+  
+      <!-- Activité récente -->
+      <div class="activity-section">
+        <h2>Recent Activity</h2>
+        <div v-if="recentActivity.length">
+          <div
+            v-for="activity in recentActivity"
+            :key="activity.id"
+            class="activity-item"
+          >
+            <p class="activity-type">
+              {{ activity.activity }}
+            </p>
+            <p class="activity-title">{{ activity.content }}</p>
+            <p class="activity-date">{{ activity.StringDate }}</p>
+          </div>
+        </div>
+        <p v-else class="no-activity">Aucune activité récente</p>
+      </div>
+  
+      <!-- Section Mes discussions -->
+      <div class="my-discussions-section">
+        <h2>My discussions</h2>
+        <div v-if="myDiscussions.length">
+          <DiscussionItem v-for="discussion in myDiscussions" :key="discussion.id" :discussion="discussion" />
+        </div>
+        <p v-else>Aucune discussion publiée.</p>
+      </div>
+
+
+      </div>
   
     </div>
   </template>
@@ -191,6 +251,8 @@
   import {useRouter } from 'vue-router'
   import Chart from 'chart.js/auto'
   import { getAuth, onAuthStateChanged } from 'firebase/auth'
+  import DiscussionItem from './DiscussionItem.vue'
+  import DevGateNavBar from './DevGateNavBar.vue'
   import {
     getFirestore,
     doc,
@@ -212,18 +274,93 @@
   const activeTab = ref("objectives")
   const user = ref(null)
   const data = ref({})
-  const color = ref('#3a86ff')
   const mes_objectifs = ref([])
   const mes_projets = ref([])
   const mes_competences = ref([])
   const followings = ref([])
   const followingsCount = ref(0)
+  const numDiscussions = ref(0)
+  const numReplies = ref(0)
   
   // --- Chart refs ---
   const objectivesChart = ref(null)
   const skillsChart = ref(null)
   let objectivesChartInstance = null
   let skillsChartInstance = null
+  const loading = ref(true);
+
+
+  const recentActivity = ref([]);
+  const myDiscussions = ref([]);
+  
+  // Charger les données de profil (informations, stats, activité)
+  const loadProfileData = async (uid) => {
+    try {
+  
+      // Récupérer l'activité récente (discussions et réponses) de l'utilisateur
+      const activityQuery = query(
+        collection(db, "Activities"),
+        where("userUID", "==", uid),
+        orderBy("atDate", "desc"),
+        limit(5)
+      );
+      const activitySnapshot = await getDocs(activityQuery);
+      recentActivity.value = activitySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error("Erreur lors du chargement du profil:", error);
+    } 
+  };
+  
+  // Charger les discussions créées par l'utilisateur
+  const loadMyDiscussions = async (uid) => {
+    try {
+      const discussionsQuery = query(
+        collection(db, "Discussions"),
+        where("authorId", "==", uid),
+        orderBy("createdAt", "desc"),
+        limit(10),
+      );
+      const discussionsSnapshot = await getDocs(discussionsQuery);
+      myDiscussions.value = discussionsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error("Erreur lors du chargement des discussions:", error);
+    }
+  };
+  
+  const loadNumDiscussions = async (uid) => {
+    try {
+      const discussionsQuery = query(
+        collection(db, "Discussions"),
+        where("authorId", "==", uid),
+      );
+  
+      const discussionsSnapshot = await getDocs(discussionsQuery);
+      numDiscussions.value = discussionsSnapshot.size;
+    } catch (error) {
+      console.error("Erreur lors du chargement des discussions:", error);
+    }
+  };
+  
+  const loadNumReplies = async (uid) => {
+    try {
+      const repliesQuery = query(
+        collection(db, "Replies"),
+        where("authorId", "==", uid),
+      );
+      
+      const repliesSnapshot = await getDocs(repliesQuery);
+      numReplies.value = repliesSnapshot.size;
+    } catch (error) {
+      console.error("Erreur lors du chargement des discussions:", error);
+    }
+  };
+  
   
   // --- Computed pour avatar et contraste ---
   const userInitial = computed(() => data.value.name?.[0]?.toUpperCase() || '?')
@@ -253,7 +390,12 @@
         fetchObjectives(),
         fetchProjects(),
         fetchSkills(),
-        fetchFollowings()
+        fetchFollowings(),
+        loadNumDiscussions(),
+        loadMyDiscussions(),
+        loadNumReplies(),
+        loadProfileData()
+        
       ])
     })
   })
@@ -264,7 +406,6 @@
       const snap = await getDoc(doc(db, 'users', user.value.uid))
       if (!snap.exists()) return
       data.value = snap.data()
-      color.value = data.value.color || '#3a86ff'
       followingsCount.value = data.value.followings?.length || 0
     } catch (error) {
       console.error("Erreur lors de la récupération du profil:", error)
@@ -540,14 +681,14 @@
   }
   
   /* Stats container */
-  .stats-container {
+  .stats-contain {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin: 2rem 0;
   }
   
-  .stats-card {
+  .stats {
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
@@ -555,13 +696,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
   
-  .stats-card h3 {
+  .stats h3 {
     font-size: 1rem;
     color: #4a5568;
     margin: 0 0 0.5rem 0;
   }
   
-  .stats-card p {
+  .stats p {
     font-size: 1.8rem;
     font-weight: bold;
     color: #2d3748;
@@ -953,6 +1094,101 @@
 .following-card p {
   font-size: 0.85rem;
   color: #4a5568;
+}
+
+.avatar-container {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.default-avatar {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #666;
+}
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 2rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.stat-item {
+  text-align: center;
+}
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0079d3;
+}
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+.activity-section {
+  margin: 2rem 0;
+}
+.activity-section h2 {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+.activity-item {
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+.activity-type {
+  font-size: 0.8rem;
+  color: #0079d3;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+.activity-title {
+  font-weight: 500;
+  margin: 0.25rem 0;
+}
+.activity-date {
+  font-size: 0.8rem;
+  color: #666;
+}
+.no-activity {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+}
+.my-discussions-section {
+  margin: 2rem 0;
+}
+.my-discussions-section h2 {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+.discussion-item {
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  background-color: #f0f8ff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.discussion-item:hover {
+  background-color: #e6f2ff;
 }
 
   

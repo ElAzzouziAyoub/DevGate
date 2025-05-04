@@ -14,6 +14,11 @@ import ViewObjectives from '@/components/ViewObjectives.vue'
 import UserPage from '@/components/UserPage.vue'
 import CreatePage from '@/components/CreatePage.vue'
 import NotificationPage from '@/components/NotificationPage.vue'
+/*---*/
+import ProfileView from '@/views/ProfileView.vue';
+import Administration from '@/views/Administration.vue';
+import Notification from '@/views/NotificationPage.vue';
+import EditProfile from '@/views/EditProfile.vue';
 
 
 const routes = [
@@ -88,6 +93,25 @@ const routes = [
     name : 'ProfilePage',
     path : '/profile',
     component : ProfilePage
+  },
+  { path: '/profiles', component: ProfileView },
+  { path: '/profile/:userUID', component: ProfileView },
+  { path: '/Administration', component: Administration },
+  { path: '/notification', component: Notification },
+  {path: '/edit-profile', component: EditProfile},
+  {
+    path: '/Discussion/:id',
+    name: 'discussion',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('@/views/DiscussionPage.vue'),
+    props: true,
+  },
+  {
+    path : '/forumhome',
+    name : 'ForumHoome',
+    component : () =>import('@/views/HomePage.vue')
   }
 ]
 

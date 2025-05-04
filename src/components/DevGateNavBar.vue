@@ -1,13 +1,38 @@
 <template>
-  <div class="home">
+    <div class="header">
+      <h2>DevGate</h2>
+      <router-link to="/home"><h4 style="cursor: pointer">Home</h4></router-link>
   
+      <div class="profile">
+        <router-link to="/friends"> <h4 style="cursor: pointer">Users</h4></router-link>
+      </div>
+  
+      <div class="profile">
+        <router-link to="/create"> <h4 style="cursor: pointer">Create</h4></router-link>
+      </div>
+  
+      <div class="profile">
+        <router-link to="/forumhome"> <h4 style="cursor: pointer">DevForum</h4></router-link>
+      </div>
+  
+  
+  
+      <div class="notification">
+        <button @click="notif"><i class="fa-solid fa-bell"></i></button>
+      </div>
+      <div class="profile">
+        <button @click="gotoprofile"><i class="fa-solid fa-user"></i></button>
+      </div>
+      <div class="signout">
+        <button @click="signOutUser"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
     </div>
+  </template>
+  
+  <script setup>
+  /*eslint-disable*/
 
-  <router-view />
-</template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged , signOut} from 'firebase/auth'
 
@@ -24,25 +49,11 @@ const signOutUser = async () => {
     console.error("Sign-out error:", err)
   }
 }
-
-
-onMounted(() => {
-  onAuthStateChanged(auth, (u) => {
-    user.value = u
-
-    if (u) {
-      if (router.currentRoute.value.path === '/') {
-        router.push('/home')
-      }
-    } else {
-      if (router.currentRoute.value.path !== '/') {
-        router.push('/')
-      }
-    }
+  const props = defineProps({
+      user : Object
   })
-})
 
-const notif = () => {
+  const notif = () => {
   router.push("/notif")
 }
 
@@ -50,10 +61,13 @@ const gotoprofile = () => {
   router.push('/profile') // or wherever
 }
 
-</script>
 
-<style scoped>
-.home {
+  
+  
+  </script>
+  
+  <style scoped>
+  .home {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   position : sticky
 }
@@ -204,4 +218,5 @@ const gotoprofile = () => {
   border: 2px solid white;
   display: none;
 }
-</style>
+  
+  </style>

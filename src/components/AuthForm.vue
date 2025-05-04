@@ -1,138 +1,170 @@
 <template>
-  <div class="auth-container">
-    <div class="auth-card">
-      <h2 class="auth-title">{{ isLogin ? 'Connexion' : 'Inscription' }}</h2>
-      
-      <div class="input-group">
-        <input v-model="email" type="email" placeholder="Email" class="auth-input" />
-        <input v-model="password" type="password" placeholder="Mot de passe" class="auth-input" />
-
-        <template v-if="!isLogin">
-          <input v-model="firstName" type="text" placeholder="Prénom" class="auth-input" />
-          <input v-model="lastName" type="text" placeholder="Nom" class="auth-input" />
-        </template>
+    <div class="auth-container">
+      <PopUp :popUpMode="popUpMode" :content="popUpContent" :type="PopUpType" :colorEffect="effectColor" :confEvent="ConfRef" @DisappearPopUp="hidePopUp" @confirmed="ContinueOp"/>
+      <div class="auth-card">
+        <h2 class="auth-title">{{ isLogin ? 'Connexion' : 'Inscription' }}</h2>
+        
+        <div class="input-group">
+          <div v-if="!isLogin" class="img-input-group">
+            <button @click="removeImage" class="img-remove-btn">&times;</button>
+            <div class="img-container">
+              <img v-if="imgSrc" :src="imgSrc" alt="" @click="triggerFileDialog">
+              <div v-else @click="triggerFileDialog">?</div>
+            </div>
+            <p>Clicker ici pour telecharger une photo</p>
+            <input ref="FileInput" type="file" name="profileImage" accept="image/*" @change="updateProfileImage" hidden>
+          </div>
+          <input v-model="email" type="email" placeholder="Email" class="auth-input" />
+          <div class="password-div">
+            <input v-model="password" :type="passwordType" placeholder="Mot de passe" class="auth-input pass-input" />
+            <button @click="toggleShowPassword" class="toggle-show-pass-btn"><i class="fa fa-eye-slash" v-show="passwordType === 'password'"></i><i class="fa fa-eye" v-show="passwordType === 'text'"></i></button>
+          </div>
+          <template v-if="!isLogin">
+            <input v-model="firstName" type="text" placeholder="Prénom" class="auth-input" />
+            <input v-model="lastName" type="text" placeholder="Nom" class="auth-input" />
+          </template>
+        </div>
+        
+        <button @click="handleSubmit" class="auth-button">
+          {{ isLogin ? 'Se connecter' : 'S\'inscrire' }}
+        </button>
+        
+        <p @click="toggleForm" class="auth-toggle">
+          {{ isLogin ? 'Pas encore inscrit ? Créer un compte' : 'Déjà un compte ? Se connecter' }}
+        </p>
       </div>
-
-      <button @click="handleSubmit" class="auth-button">
-        {{ isLogin ? 'Se connecter' : 'S\'inscrire' }}
-      </button>
-
-      <p @click="toggleForm" class="auth-toggle">
-        {{ isLogin ? 'Pas encore inscrit ? Créer un compte' : 'Déjà un compte ? Se connecter' }}
-      </p>
     </div>
-  </div>
-</template>
-
-<script setup>
-import { ref } from "vue";
-import { login, signup } from "@/services/authservice";
-import { useRouter } from "vue-router";
-
-const email = ref("");
-const password = ref("");
-const firstName = ref("");
-const lastName = ref("");
-const isLogin = ref(true);
-const router = useRouter();
-
-const handleSubmit = async () => {
-  try {
-
-    if (isLogin.value) {
-      await login(email.value, password.value);
-      alert("Connecté !");
-      router.push("/home");
-    } else {
-      await signup(email.value, password.value, firstName.value, lastName.value);
-      alert("Compte créé !");
-      router.push("/home");
-    }
-  } catch (err) {
-    alert(err.message);
+  </template>
+  
+  <script setup>
+  /*eslint-disable*/
+  import { ref } from 'vue'
+  import { login, signup } from '@/composables/useAuth'
+  import { updateProfile } from 'firebase/auth'
+  import { useRouter } from 'vue-router'
+  import { addNewUser } from '@/composables/useFirestore'
+  import { auth } from '@/composables/useAuth'
+  import PopUp from '@/components/PopUp.vue'
+  import { hundlePopUp } from '@/composables/PopUpHundle'
+  import { uploadImage } from '@/composables/useCloudinary'
+  
+  
+  const email = ref('')
+  const password = ref('')
+  const firstName = ref('')
+  const lastName = ref('')
+  const isLogin = ref(true)
+  const profileImage = ref(null);
+  const imgSrc = ref(null);
+  const router = useRouter();
+  const passwordType = ref("password");
+  
+  const FileInput = ref(null);
+  
+  function getCurrentDate() {
+      return new Date().toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "long"
+      });
   }
-};
-
-const toggleForm = () => {
-  isLogin.value = !isLogin.value;
-  firstName.value = "";
-  lastName.value = "";
-};
-</script>
-
-<style scoped>
-/* Style du formulaire */
-.auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-}
-
-.auth-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.auth-title {
-  text-align: center;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.auth-input {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-.auth-input:focus {
-  outline: none;
-  border-color: #0079d3;
-}
-
-.auth-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #0079d3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.auth-button:hover {
-  background-color: #0064b7;
-}
-
-.auth-toggle {
-  text-align: center;
-  margin-top: 1rem;
-  color: #0079d3;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.auth-toggle:hover {
-  text-decoration: underline;
-}
-</style>
-
-
-/* */
+  
+  function triggerFileDialog(event) {
+    event.preventDefault();
+    FileInput.value.click();
+  }
+  
+  const handleSubmit = async () => {
+    try {
+      if (isLogin.value) {
+        await login(email.value, password.value);
+      } else {
+        const userCredential = await signup(email.value, password.value)
+        await updateProfile(userCredential.user, {
+          displayName: `${firstName.value} ${lastName.value}`
+        })
+  
+        const uploadedImage = await uploadImage(profileImage.value);
+  
+        const newUser = {
+          name: `${firstName.value} ${lastName.value}`,
+          userUID: auth.currentUser.uid,
+          priviliges: "",
+          numUpvotes: 0,
+          JoinDate: getCurrentDate(),
+          email: email.value,
+          profImage: uploadedImage,
+          admin: false,  
+          first_name: firstName.value || "Undefined", 
+          last_name: lastName.value || "Undefined", 
+          following : [],
+          followings : []
+        }
+        
+        await addNewUser(auth.currentUser.uid, newUser);
+      }
+      showPopUp(1, "Connecté avec success!", 0);
+    } catch (err) {
+      console.log(err);
+      showPopUp(4, "Faild Connexion: Cridentials Error");
+    }
+  }
+  
+  const toggleForm = () => {
+    isLogin.value = !isLogin.value
+    firstName.value = ''
+    lastName.value = ''
+  }
+  
+  function toggleShowPassword(event) {
+    event.preventDefault();
+    if(passwordType.value === "password") {
+      passwordType.value = "text";
+    } else {
+      passwordType.value = "password";
+    }
+  }
+  
+  function updateProfileImage(event) {
+    event.preventDefault();
+    let image = event.target.files || event.dataTransfer.files;
+  
+    if(!image.length) return;
+  
+    profileImage.value =image[0];
+    imgSrc.value = URL.createObjectURL(image[0]);
+  }
+  
+  function removeImage(event) {
+    event.preventDefault();
+  
+    imgSrc.value = null;
+    profileImage.value = null;
+  }
+  
+  
+  const popUpMode = ref(false),
+  popUpContent = ref(""),
+  PopUpType = ref("Warining"),
+  effectColor = ref(''),
+  ConfRef = ref(null);
+  
+  function showPopUp(mode, content, eventConf=null) {
+      hundlePopUp(mode, content, eventConf, popUpMode, popUpContent, PopUpType, effectColor, ConfRef);
+  }
+  
+  function hidePopUp() {
+      hundlePopUp(0, '', null, popUpMode, popUpContent, PopUpType, effectColor, ConfRef);
+  }
+  
+  function ContinueOp(confEvent) {
+    console.log(confEvent);
+      if(confEvent == 0) {
+          router.push('/');
+      }
+  }
+  </script>
+  
+  
+  <style scoped>
+  @import '@/assets/css/Authentication.css';
+  </style>
