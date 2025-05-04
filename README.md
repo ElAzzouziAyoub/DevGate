@@ -1,4 +1,18 @@
 # project
+# Link to project
+
+```
+https://devgate-73bd8.web.app
+```
+
+# Firebase Console
+
+```
+https://console.firebase.google.com/project/devgate-73bd8/overview
+```
+
+
+
 
 ## Project setup
 ```
