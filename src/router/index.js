@@ -13,6 +13,7 @@ import EditObjectif from '@/components/EditObjectif.vue'
 import ViewObjectives from '@/components/ViewObjectives.vue'
 import UserPage from '@/components/UserPage.vue'
 import CreatePage from '@/components/CreatePage.vue'
+import NotificationPage from '@/components/NotificationPage.vue'
 
 
 const routes = [
@@ -24,6 +25,10 @@ const routes = [
   {
     path : '/create',
     component : CreatePage
+  },
+  {
+    path : '/notif',
+    component : NotificationPage
   }
   ,
   {

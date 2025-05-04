@@ -126,6 +126,7 @@
       </div>
   
       <div class="view-projects" v-if="activeTab === 'projects'">
+        <router-link to="/project">View my projects</router-link>
         <article
           v-for="(project, index) in mes_projets"
           :key="index"
@@ -161,9 +162,11 @@
             </ul>
           </div>
         </article>
+
       </div>
   
       <div class="view-skills" v-if="activeTab === 'skills'">
+        <router-link to="/competence">View my competences</router-link>
         <div class="skills-grid">
           <div
             v-for="(skill, index) in mes_competences"

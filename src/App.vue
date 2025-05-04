@@ -3,7 +3,6 @@
     <div class="header" v-if="user">
       <h2>DevGate</h2>
       <router-link to="/home"><h4 style="cursor: pointer">Home</h4></router-link>
-      <router-link to="/questions"><h4 style="cursor: pointer">Questions</h4></router-link>
 
       <div class="profile">
         <router-link to="/friends"> <h4 style="cursor: pointer">Users</h4></router-link>
@@ -68,7 +67,7 @@ onMounted(() => {
 })
 
 const notif = () => {
-  // your notif function
+  router.push("/notif")
 }
 
 const gotoprofile = () => {

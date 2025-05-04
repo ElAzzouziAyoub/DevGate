@@ -1,324 +1,341 @@
 <template>
-    <div class="users-page">
-      <h1>Réseau d'utilisateurs</h1>
-  
-      <!-- Barre de recherche et switch amis/tous -->
-      <div class="controls">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Rechercher un utilisateur..."
-          class="search-bar"
-        />
-        <button @click="showFriends = !showFriends" class="toggle-view">
-          {{ showFriends ? 'Voir tous les utilisateurs' : 'Voir mes amis' }}
-        </button>
-      </div>
-  
-      <!-- Grille d'utilisateurs -->
-      <div class="users-grid">
-        <div v-for="u in filteredUsers" :key="u.id" class="user-card">
-          <div class="card-header">
-            <div class="avatar" :style="{ backgroundColor: u.color || '#4299e1' }">
-              {{ u.name?.[0]?.toUpperCase() || '?' }}
-            </div>
-            <div class="info">
-              <h2>{{ u.name }}</h2>
-              <p>{{ u.email }}</p>
-              <div class="connection-status">
-                <span v-if="isFriend(u.id)" class="friend-badge">Ami↔</span>
-                <span v-else-if="isFollowing(u.id)" class="following-badge">Abonné →</span>
-                <span v-else-if="isFollower(u.id)" class="follower-badge">← Abonné</span>
-              </div>
-            </div>
+  <div class="users-page">
+    <h1>Réseau d'utilisateurs</h1>
+
+    <!-- Barre de recherche et switch amis/tous -->
+    <div class="controls">
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="Rechercher un utilisateur..."
+        class="search-bar"
+      />
+      <button @click="showFriends = !showFriends" class="toggle-view">
+        {{ showFriends ? 'Voir tous les utilisateurs' : 'Voir mes amis' }}
+      </button>
+    </div>
+
+    <!-- Grille d'utilisateurs -->
+    <div class="users-grid">
+      <div v-for="u in filteredUsers" :key="u.id" class="user-card">
+        <div class="card-header">
+          <div class="avatar" :style="{ backgroundColor: u.color || '#4299e1' }">
+            {{ u.name?.[0]?.toUpperCase() || '?' }}
           </div>
-  
-          <div class="stats">
-            <span>{{ u.objectivesCount }} objectifs</span>
-            <span>{{ u.projectsCount }} projets</span>
-            <span>{{ u.skillsCount }} compétences</span>
-          </div>
-  
-          <div class="actions">
-            <button
-              @click="toggleFollow(u)"
-              :class="isFollowing(u.id) ? 'unfollow-btn' : 'follow-btn'"
-            >
-              {{ isFollowing(u.id) ? 'Se désabonner' : 'Suivre' }}
-            </button>
-            <button
-              @click="viewProfile(u)"
-              class="view-btn"
-              :disabled="!isFriend(u.id)"
-            >
-              Voir profil
-            </button>
+          <div class="info">
+            <h2>{{ u.name }}</h2>
+            <div class="connection-status">
+              <span v-if="isFriend(u.id)" class="friend-badge">Ami↔</span>
+              <span v-else-if="isFollowing(u.id)" class="following-badge">Abonné →</span>
+              <span v-else-if="isFollower(u.id)" class="follower-badge">← Abonné</span>
+            </div>
           </div>
         </div>
-      </div>
-  
-      <!-- Modal profil -->
-      <div
-        v-if="selectedUser"
-        class="modal-overlay"
-        @click.self="closeModal"
-      >
-        <div class="modal">
-          <header
-            class="modal-header"
-            :style="{ backgroundColor: selectedUser.color || '#4299e1' }"
+
+        <div class="stats">
+          <span>{{ u.objectivesCount }} objectifs</span>
+          <span>{{ u.projectsCount }} projets</span>
+          <span>{{ u.skillsCount }} compétences</span>
+        </div>
+
+        <div class="actions">
+          <button
+            @click="toggleFollow(u)"
+            :class="isFollowing(u.id) ? 'unfollow-btn' : 'follow-btn'"
           >
-            <div class="avatar-large">
-              {{ selectedUser.name?.[0]?.toUpperCase() }}
-            </div>
-            <h2>{{ selectedUser.name }}</h2>
-            <p>{{ selectedUser.email }}</p>
-            <div class="friend-status">
-              <span class="friend-badge">Ami↔</span>
-            </div>
-          </header>
-  
-          <div class="modal-body">
-            <!-- Graphique de progression -->
-            <div class="chart-container">
-              <h3>Progression globale</h3>
-              <canvas ref="progressChart"></canvas>
-            </div>
-  
-            <!-- Sections récentes -->
-            <div class="section">
-              <h3>Objectifs récents</h3>
-              <ul>
-                <li v-for="o in selectedUser.objectives.slice(0,3)" :key="o.id">
-                  {{ o.titre }} — {{ (o.progression*100).toFixed(0) }}%
-                </li>
-              </ul>
-              <p v-if="!selectedUser.objectives.length">Aucun objectif</p>
-            </div>
-  
-            <div class="section">
-              <h3>Projets récents</h3>
-              <ul>
-                <li v-for="p in selectedUser.projects.slice(0,3)" :key="p.id">
-                  {{ p.title }} — {{ p.status }}
-                </li>
-              </ul>
-              <p v-if="!selectedUser.projects.length">Aucun projet</p>
-            </div>
-  
-            <div class="section">
-              <h3>Compétences récentes</h3>
-              <ul>
-                <li v-for="s in selectedUser.skills.slice(0,3)" :key="s.id">
-                  {{ s.name }} — {{ s.level }}%
-                </li>
-              </ul>
-              <p v-if="!selectedUser.skills.length">Aucune compétence</p>
-            </div>
-          </div>
-  
-          <button class="modal-close" @click="closeModal">×</button>
+            {{ isFollowing(u.id) ? 'Se désabonner' : 'Suivre' }}
+          </button>
+          <button
+            @click="viewProfile(u)"
+            class="view-btn"
+            :disabled="!isFriend(u.id)"
+          >
+            Voir profil
+          </button>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  /*eslint-disable*/
-  import { ref, computed, onMounted, nextTick } from 'vue'
-  import { getAuth, onAuthStateChanged } from 'firebase/auth'
-  import {
-    getFirestore,
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    query,
-    where,
-    updateDoc,
-    writeBatch
-  } from 'firebase/firestore'
-  import Chart from 'chart.js/auto'
-  
-  const auth = getAuth()
-  const db = getFirestore()
-  
-  // Utilisateur courant et son profil Firestore
-  const currentUser    = ref(null)
-  const currentProfile = ref({})
-  
-  // Liste des autres utilisateurs
-  const users        = ref([])
-  const searchQuery  = ref('')
-  const showFriends  = ref(false)
-  const selectedUser = ref(null)
-  
-  // Réf pour le chart
-  const progressChart         = ref(null)
-  let progressChartInstance   = null
-  
-  // Charger Auth + profil + utilisateurs
-  onMounted(() => {
-    onAuthStateChanged(auth, async u => {
-      if (!u) return
-      currentUser.value    = u
-      // Charger les données Firestore du current
-      const snap = await getDoc(doc(db, 'users', u.uid))
-      currentProfile.value = snap.exists() ? snap.data() : {}
-      await loadUsers()
-    })
+
+    <!-- Modal profil -->
+    <div
+      v-if="selectedUser"
+      class="modal-overlay"
+      @click.self="closeModal"
+    >
+      <div class="modal">
+        <header
+          class="modal-header"
+          :style="{ backgroundColor: selectedUser.color || '#4299e1' }"
+        >
+          <div class="avatar-large">
+            {{ selectedUser.name?.[0]?.toUpperCase() }}
+          </div>
+          <h2>{{ selectedUser.name }}</h2>
+          <p>{{ selectedUser.email }}</p>
+          <div class="friend-status">
+            <span class="friend-badge">Ami↔</span>
+          </div>
+        </header>
+
+        <div class="modal-body">
+          <!-- Graphique de progression -->
+          <div class="chart-container">
+            <h3>Progression globale</h3>
+            <canvas ref="progressChart"></canvas>
+          </div>
+
+          <!-- Sections récentes -->
+          <div class="section">
+            <h3>Objectifs récents</h3>
+            <ul>
+              <li v-for="o in selectedUser.objectives.slice(0,3)" :key="o.id">
+                {{ o.titre }} — {{ (o.progression*100).toFixed(0) }}%
+              </li>
+            </ul>
+            <p v-if="!selectedUser.objectives.length">Aucun objectif</p>
+          </div>
+
+          <div class="section">
+            <h3>Projets récents</h3>
+            <ul>
+              <li v-for="p in selectedUser.projects.slice(0,3)" :key="p.id">
+                {{ p.title }} — {{ p.status }}
+              </li>
+            </ul>
+            <p v-if="!selectedUser.projects.length">Aucun projet</p>
+          </div>
+
+          <div class="section">
+            <h3>Compétences récentes</h3>
+            <ul>
+              <li v-for="s in selectedUser.skills.slice(0,3)" :key="s.id">
+                {{ s.name }} — {{ s.level }}%
+              </li>
+            </ul>
+            <p v-if="!selectedUser.skills.length">Aucune compétence</p>
+          </div>
+        </div>
+
+        <button class="modal-close" @click="closeModal">×</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+/*eslint-disable*/
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  writeBatch,
+  addDoc
+} from 'firebase/firestore'
+import Chart from 'chart.js/auto'
+
+const auth = getAuth()
+const db = getFirestore()
+
+// Utilisateur courant et son profil Firestore
+const currentUser    = ref(null)
+const currentProfile = ref({})
+
+// Liste des autres utilisateurs
+const users        = ref([])
+const searchQuery  = ref('')
+const showFriends  = ref(false)
+const selectedUser = ref(null)
+
+// Réf pour le chart
+const progressChart         = ref(null)
+let progressChartInstance   = null
+
+// Charger Auth + profil + utilisateurs
+onMounted(() => {
+  onAuthStateChanged(auth, async u => {
+    if (!u) return
+    currentUser.value    = u
+    // Charger les données Firestore du current
+    const snap = await getDoc(doc(db, 'users', u.uid))
+    currentProfile.value = snap.exists() ? snap.data() : {}
+    await loadUsers()
   })
-  
-  // Récupérer tous les users sauf current + leurs items + followings
-  async function loadUsers() {
-    const snaps = await getDocs(collection(db, 'users'))
-    const all   = snaps.docs.map(d => ({ id: d.id, ...d.data() }))
-                     .filter(u => u.id !== currentUser.value.uid)
-  
-    users.value = await Promise.all(all.map(async u => {
-      const data = { ...u, followings: u.followings || [] }
-  
-      // Charger items
-      const [oSnap, pSnap, sSnap] = await Promise.all([
-        getDocs(query(collection(db, 'objectives'), where('UserUID', '==', u.id))),
-        getDocs(query(collection(db, 'projects'),   where('UserUID', '==', u.id))),
-        getDocs(query(collection(db, 'competences'),     where('UserUID', '==', u.id)))
-      ])
-  
-      return {
-        ...data,
-        objectives: oSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-        projects:   pSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-        skills:     sSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-        objectivesCount: oSnap.size,
-        projectsCount:   pSnap.size,
-        skillsCount:     sSnap.size
-      }
-    }))
-  }
-  
-  // Filtrage selon recherche et amis seulement
-  const filteredUsers = computed(() => {
-    let list = users.value
-    if (showFriends.value) {
-      list = list.filter(u => isFriend(u.id))
-    }
-    const q = searchQuery.value.trim().toLowerCase()
-    if (q) {
-      list = list.filter(u =>
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q)
-      )
-    }
-    return list
-  })
-  
-  // Helpers de relation
-  function isFollowing(id) {
-    return (currentProfile.value.followings || []).includes(id)
-  }
-  
-  function isFollower(id) {
-    const other = users.value.find(u => u.id === id)
-    return (other?.followings || []).includes(currentUser.value.uid)
-  }
-  
-  function isFriend(id) {
-    return isFollowing(id) && isFollower(id)
-  }
-  
-  // Suivre / se désabonner
-  async function toggleFollow(u) {
-    const meRef = doc(db, 'users', currentUser.value.uid)
-    const arr   = (currentProfile.value.followings || []).slice()
-    const idx   = arr.indexOf(u.id)
-    if (idx === -1) arr.push(u.id)
-    else arr.splice(idx, 1)
-  
-    await updateDoc(meRef, { followings: arr })
-    // mettre à jour le profil local
-    currentProfile.value.followings = arr
-  }
-  
-  // Accepter mutuellement (invitations)
-  async function acceptInvitation(u) {
-    const meRef  = doc(db, 'users', currentUser.value.uid)
-    const youRef = doc(db, 'users', u.id)
-  
-    const myArr  = [...(currentProfile.value.followings || [])]
-    const yourArr = [...(u.followings || [])]
-  
-    if (!myArr.includes(u.id))    myArr.push(u.id)
-    if (!yourArr.includes(currentUser.value.uid)) yourArr.push(currentUser.value.uid)
-  
-    const batch = writeBatch(db)
-    batch.update(meRef,  { followings: myArr })
-    batch.update(youRef, { followings: yourArr })
-    await batch.commit()
-  
-    // recharger local
-    const [meSnap, youSnap] = await Promise.all([
-      getDoc(meRef),
-      getDoc(youRef)
+})
+
+// Récupérer tous les users sauf current + leurs items + followings
+async function loadUsers() {
+  const snaps = await getDocs(collection(db, 'users'))
+  const all   = snaps.docs.map(d => ({ id: d.id, ...d.data() }))
+                 .filter(u => u.id !== currentUser.value.uid)
+
+  users.value = await Promise.all(all.map(async u => {
+    const data = { ...u, followings: u.followings || [] }
+
+    // Charger items
+    const [oSnap, pSnap, sSnap] = await Promise.all([
+      getDocs(query(collection(db, 'objectives'), where('UserUID', '==', u.id))),
+      getDocs(query(collection(db, 'projects'),   where('UserUID', '==', u.id))),
+      getDocs(query(collection(db, 'competences'),     where('UserUID', '==', u.id)))
     ])
-    currentProfile.value.followings = meSnap.data().followings
-    const idx = users.value.findIndex(x => x.id === u.id)
-    if (idx !== -1) users.value[idx].followings = youSnap.data().followings
-  }
-  
-  // Modal profil
-  function viewProfile(u) {
-    if (!isFriend(u.id)) return
-    selectedUser.value = u
-    nextTick(initProgressChart)
-  }
-  function closeModal() {
-    selectedUser.value = null
-    if (progressChartInstance) {
-      progressChartInstance.destroy()
-      progressChartInstance = null
+
+    return {
+      ...data,
+      objectives: oSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      projects:   pSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      skills:     sSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+      objectivesCount: oSnap.size,
+      projectsCount:   pSnap.size,
+      skillsCount:     sSnap.size
     }
+  }))
+}
+
+// Filtrage selon recherche et amis seulement
+const filteredUsers = computed(() => {
+  let list = users.value
+  if (showFriends.value) {
+    list = list.filter(u => isFriend(u.id))
   }
-  
-  // Init Chart
-  function initProgressChart() {
-    const u = selectedUser.value
-    if (!u || !progressChart.value) return
-  
-    if (progressChartInstance) progressChartInstance.destroy()
-    const ctx = progressChart.value.getContext('2d')
-  
-    const objAvg   = u.objectives.length ? u.objectives.reduce((sum, o) => sum + o.progression, 0) / u.objectives.length * 100 : 0
-    const skillAvg = u.skills.length     ? u.skills.reduce((sum, s) => sum + s.level, 0)       / u.skills.length       : 0
-  
-    progressChartInstance = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Objectifs','Compétences'],
-        datasets: [{
-          label: 'Moyenne (%)',
-          data: [Math.round(objAvg), Math.round(skillAvg)],
-          backgroundColor: ['#4299e1','#48bb78'],
-          borderColor: ['#2b6cb0','#2f855a'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: { callback: v => v + '%' }
+  const q = searchQuery.value.trim().toLowerCase()
+  if (q) {
+    list = list.filter(u =>
+      u.name.toLowerCase().includes(q)
+    )
+  }
+  return list
+})
+
+// Helpers de relation
+function isFollowing(id) {
+  return (currentProfile.value.followings || []).includes(id)
+}
+
+function isFollower(id) {
+  const other = users.value.find(u => u.id === id)
+  return (other?.followings || []).includes(currentUser.value.uid)
+}
+
+function isFriend(id) {
+  return isFollowing(id) && isFollower(id)
+}
+
+// Suivre / se désabonner
+async function toggleFollow(u) {
+  const meRef = doc(db, 'users', currentUser.value.uid)
+  const arr   = (currentProfile.value.followings || []).slice()
+  const idx   = arr.indexOf(u.id)
+
+  if (idx === -1) {
+    arr.push(u.id) // Follow the user
+    // Create a follow notification
+    await createFollowNotification(u)
+  } else {
+    arr.splice(idx, 1) // Unfollow the user
+    // Create an unfollow notification
+    await createUnfollowNotification(u)
+  }
+
+  await updateDoc(meRef, { followings: arr })
+  // Update local profile
+  currentProfile.value.followings = arr
+}
+
+// Function to create a notification for unfollowing a user
+async function createUnfollowNotification(u) {
+  const notificationsRef = collection(db, 'notifications')
+  const notification = {
+    sender: currentProfile.value.name,
+    receiver: u.id,
+    date: new Date().toISOString(), // Current timestamp
+    message : 'has unfollowed you !'
+  }
+
+  // Add the notification to Firestore
+  await addDoc(notificationsRef, notification)
+}
+
+
+
+// Fonction pour créer une notification de suivi
+async function createFollowNotification(u) {
+  const notificationsRef = collection(db, 'notifications')
+  const notification = {
+    sender: currentProfile.value.name,
+    receiver: u.id,
+    date: new Date().toISOString(), // Current timestamp
+    message : 'is following you now !'
+  }
+
+  // Ajouter la notification à Firestore
+  await addDoc(notificationsRef, notification)
+}
+
+// Accepter mutuellement (invitations)
+async function acceptInvitation(u) {
+  const meRef  = doc(db, 'users', currentUser.value.uid)
+  const youRef = doc(db, 'users', u.id)
+
+  const myArr  = [...(currentProfile.value.followings || [])]
+  const yourArr = [...(u.followings || [])]
+
+  myArr.push(u.id)
+  yourArr.push(currentUser.value.uid)
+
+  const batch = writeBatch(db)
+  batch.update(meRef, { followings: myArr })
+  batch.update(youRef, { followings: yourArr })
+
+  await batch.commit()
+}
+
+// View user profile in modal
+function viewProfile(u) {
+  selectedUser.value = u
+  nextTick(() => {
+    if (progressChart.value && !progressChartInstance) {
+      progressChartInstance = new Chart(progressChart.value, {
+        type: 'bar',
+        data: {
+          labels: ['Objectifs', 'Projets', 'Compétences'],
+          datasets: [{
+            label: 'Progression',
+            data: [
+              u.objectivesCount,
+              u.projectsCount,
+              u.skillsCount
+            ],
+            backgroundColor: '#38b2ac',
+            borderColor: '#38b2ac',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
           }
         }
-      }
-    })
-  }
-  </script>
-  
-  
-  <style scoped>
+      })
+    }
+  })
+}
+
+// Fermer modal
+function closeModal() {
+  selectedUser.value = null
+}
+</script>
+
+<style scoped>
   .users-page {
     max-width: 1200px; margin: auto; padding: 2rem;
     font-family: 'Segoe UI', sans-serif; color: #1a202c;
@@ -429,4 +446,4 @@
     .search-bar { width:100%; }
     .users-grid { grid-template-columns:1fr; }
   }
-  </style>
+</style>
