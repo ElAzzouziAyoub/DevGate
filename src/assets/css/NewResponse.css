@@ -1,0 +1,23 @@
+.addReply {
+    margin: 10px;
+}
+
+.NewReplyArea {
+    width: 100%;
+    height: 100px;
+}
+
+.btns button {
+    padding: 5px;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.btns button:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.btns button:active {
+    background-color: #bdbdbd;
+}

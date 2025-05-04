@@ -1,0 +1,136 @@
+.popUp {
+    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.PopUpCard {
+    background-color: rgb(247, 247, 247);
+    position: absolute;
+    min-width: 400px;
+    min-height: 150px;
+    box-shadow: 10px 6px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    z-index: 200;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+}
+
+.PopUpCard p {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.PopUpCard button {
+    background-color: transparent;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 3px 6px;
+    font-size: 1em;
+    margin-right: 20px;
+}
+
+.PopUpCard > div > button:last-child, .PopUpCard > button {
+    margin-right: 0;
+}
+
+.SuccessBtn {
+    color: #256900;
+    border: 1px solid #256900;
+}
+
+.SuccessBtn:hover {
+    color: rgb(247, 247, 247);
+    background-color: #256900;
+}
+
+.SuccessBtn:active {
+    color: rgb(247, 247, 247);
+    background-color: #174200;
+    border: 1px solid #174200;
+}
+
+.WarningBtn {
+    color: #004BE0;
+    border: 1px solid #004BE0;
+}
+
+.WarningBtn:hover {
+    color: rgb(247, 247, 247);
+    background-color: #004BE0;
+}
+
+.WarningBtn:active {
+    color: rgb(247, 247, 247);
+    background-color: #002266;
+    border: 1px solid #002266;
+}
+
+.InfoBtn {
+    color: #AC8400;
+    border: 1px solid #AC8400;
+}
+
+.InfoBtn:hover {
+    color: rgb(247, 247, 247);
+    background-color: #AC8400;
+}
+
+.InfoBtn:active {
+    color: rgb(247, 247, 247);
+    background-color: #554100;
+    border: 1px solid #554100;
+}
+
+.CriticalBtn {
+    color: #E00000;
+    border: 1px solid #E00000;
+}
+
+.CriticalBtn:hover {
+    color: rgb(247, 247, 247);
+    background-color: #E00000;
+}
+
+.CriticalBtn:active {
+    color: rgb(247, 247, 247);
+    background-color: #7c0000;
+    border: 1px solid #7c0000;
+}
+
+.PopUpCard > div button{
+    position: static;
+}
+
+@media (max-width: 600px) {
+    .PopUpCard {
+        background-color: rgb(247, 247, 247);
+        position: absolute;
+        min-width: 300px;
+        min-height: 150px;
+        box-shadow: 10px 6px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        z-index: 20;
+    
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: center;
+    }
+}

@@ -1,0 +1,152 @@
+.header {
+    display: flex;
+    position: relative;
+    padding: 5px 5px;
+    border-bottom: 1px solid gray;
+    z-index: 1000;
+}
+
+.header h3 {
+    color: #2d3748;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(to right, #0079d3, #8d16a8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+.navigationBar button, .ForUnsignedUsers button {
+    background-color: transparent;
+    border: none;
+    padding: 8px 15px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    transition: border-color 0.3s
+}
+
+.navigationBar button:hover, .ForUnsignedUsers button:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.navigationBar button:active, .ForUnsignedUsers button:active {
+    background-color: rgb(219, 219, 219);
+}
+
+.user {
+    position: absolute;
+    right: 10px;
+    display: flex;
+}
+
+.navIcon {
+    display: none;
+    padding: 7px 7px;
+}
+
+.navIcon:hover {
+    background-color: gray;
+}
+
+.Logo {
+    display: flex;
+}
+
+.ForSignedUsers {
+    display: flex;
+    gap: 0.6rem;
+    padding: 2px 5px;
+}
+
+.ForSignedUsers > div {
+    background-color: rgb(226, 226, 226);
+    color: rgb(66, 66, 66);
+    height: 30px;
+    width: 30px;
+    border-radius: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.ForSignedUsers > div:hover {
+    background-color: rgb(194, 194, 255);
+}
+
+.ForSignedUsers > div:active {
+    color: white;
+    background-color: rgb(126, 126, 177);
+}
+
+.notifNum {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    background-color: blue;
+    height: 14px;
+    width: 14px;
+    color: white;
+    border-radius: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.userList {
+    width: 150px;
+    position: absolute;
+    top: 35px;
+    right: 5px;
+    cursor: default;
+    color: black;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    border: 1px solid gray;
+    box-shadow: 5px 5px 5px gray;
+    background-color: #ffffff;
+}
+
+.userList div {
+    padding: 10px 15px;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.userList div:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.userList div:active {
+    background-color: rgb(219, 219, 219);
+}
+
+@media (max-width: 600px) {
+    .navIcon {
+        display: block;
+    }
+
+    .navigationBar {
+        background-color: white;
+        top: 50px;
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid gray;
+        box-shadow: 5px 5px 5px gray;
+    }
+
+    .hiddenBlock {
+        display: none;
+    }
+
+    .showedBlock {
+        display: flex;
+    }
+}

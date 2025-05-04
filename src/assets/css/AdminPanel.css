@@ -1,0 +1,53 @@
+.searchingUser {
+    margin: 20px;
+}
+
+.searchingUser input {
+    padding: 6px;
+
+}
+
+.UsersList {
+    box-shadow: 3px 3px 3px rgb(100, 100, 100);
+    width: 80%;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid black;
+}
+
+.addAdmin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.UsersList div, .listAdmins div {
+    padding: 10px;
+    margin: 7px;
+    position: relative;
+    border-bottom: 1px solid gray;
+}
+
+.UsersList div button, .listAdmins div button {
+    position: absolute;
+    right: 0;
+    background-color: white;
+    color: black;
+    border: 1px solid gray;
+    padding: 3px;
+}
+
+.UsersList div button:hover, .listAdmins div button:hover {
+    color: blue;
+    border-color: blue;
+}
+
+.UsersList div button:active, .listAdmins div button:active {
+    color: white;
+    background-color: blue;
+}
+
+.listAdmins {
+    margin: 20px;
+}
