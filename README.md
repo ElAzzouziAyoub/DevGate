@@ -1,4 +1,24 @@
 # project
+# Project Membbers
+```
+Ayoub El Azzouzi - Ilyass Skiriba - Yassine Bourich - Haytem Rhallab 
+```
+
+
+# Link to project
+
+```
+https://devgate-73bd8.web.app
+```
+
+# Firebase Console
+
+```
+https://console.firebase.google.com/project/devgate-73bd8/overview
+```
+
+
+
 
 ## Project setup
 ```

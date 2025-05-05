@@ -6,13 +6,13 @@
       <h3>DevForum</h3>
       </div>
       <div v-if="DBUser" class="navigationBar" :class="[hiddenMenu ? ' hiddenBlock' : ' showedBlock']">
-        <button @click="router.push('/home')">Home</button>
+        <button @click="router.push('/forumhome')">Home</button>
         <button @click="goToCreateDisc">Créer une Discussion</button>
         <button @click="router.push('/home')">DevGate</button>
         <button v-if="DBUser?.priviliges === 'Admin' || DBUser?.priviliges === 'Moderator'" @click="router.push('/Administration')">Administration</button>
       </div>
       <div v-else class="navigationBar" :class="[hiddenMenu ? ' hiddenBlock' : ' showedBlock']">
-        <button @click="router.push('/home')">Home</button>
+        <button @click="router.push('/forumhome')">Home</button>
         <button @click="goToCreateDisc">Créer une Discussion</button>
         <button @click="router.push('/home')">DevGate</button>
         

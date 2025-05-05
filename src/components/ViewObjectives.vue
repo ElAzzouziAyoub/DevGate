@@ -161,10 +161,9 @@ function formatDate(firebaseDate) {
 }
 
 async function incrementer(index1, index2) {
-  const objectif = mes_objectifs.value[index1]; // Objectif courant
-  const subskill = objectif.subskills[index2]; // Sous-compétence
+  const objectif = mes_objectifs.value[index1];
+  const subskill = objectif.subskills[index2];
 
-  // Modifier l'état de la sous-compétence et mettre à jour la progression
   if (subskill.done === false) {
     subskill.done = true;
     objectif.progression += 1 / objectif.subskills.length;
@@ -173,12 +172,11 @@ async function incrementer(index1, index2) {
     objectif.progression -= 1 / objectif.subskills.length;
   }
 
-  // Mettre à jour le document dans Firestore
   try {
-    const objectifRef = doc(db, "objectives", objectif.id); // Référence du document de l'objectif
+    const objectifRef = doc(db, "objectives", objectif.id);
     await updateDoc(objectifRef, {
       progression: objectif.progression,
-      subskills: objectif.subskills, // Met à jour l'ensemble des sous-compétences
+      subskills: objectif.subskills,
     });
     console.log("Mise à jour réussie dans Firestore");
   } catch (error) {

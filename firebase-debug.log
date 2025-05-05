@@ -1,0 +1,109 @@
+[debug] [2025-05-04T23:06:26.300Z] ----------------------------------------------------------------------
+[debug] [2025-05-04T23:06:26.303Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init hosting
+[debug] [2025-05-04T23:06:26.304Z] CLI Version:   14.2.2
+[debug] [2025-05-04T23:06:26.304Z] Platform:      linux
+[debug] [2025-05-04T23:06:26.304Z] Node Version:  v22.15.0
+[debug] [2025-05-04T23:06:26.304Z] Time:          Mon May 05 2025 00:06:26 GMT+0100 (GMT+01:00)
+[debug] [2025-05-04T23:06:26.305Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-04T23:06:26.310Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-04T23:06:26.311Z] > authorizing via signed-in user (projectforum10@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/ayoub/Documents/project
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-04T23:06:30.456Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:06:30.456Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:06:30.459Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-05-04T23:07:18.847Z] ----------------------------------------------------------------------
+[debug] [2025-05-04T23:07:18.850Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init hosting
+[debug] [2025-05-04T23:07:18.851Z] CLI Version:   14.2.2
+[debug] [2025-05-04T23:07:18.851Z] Platform:      linux
+[debug] [2025-05-04T23:07:18.851Z] Node Version:  v22.15.0
+[debug] [2025-05-04T23:07:18.852Z] Time:          Mon May 05 2025 00:07:18 GMT+0100 (GMT+01:00)
+[debug] [2025-05-04T23:07:18.852Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-04T23:07:18.857Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-04T23:07:18.857Z] > authorizing via signed-in user (projectforum10@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/ayoub/Documents/project
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-04T23:07:19.935Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:07:19.935Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:07:19.937Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-05-04T23:07:25.458Z] *** [apiv2] error from fetch(https://firebase.googleapis.com/v1beta1/projects?pageSize=100, {"headers":{},"method":"GET","signal":{}}): FetchError: request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100 failed, reason: getaddrinfo EAI_AGAIN firebase.googleapis.com
+[debug] [2025-05-04T23:07:25.459Z] Failed to make request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100
+[debug] [2025-05-04T23:07:30.467Z] Error: Timed out.
+    at Timeout._onTimeout (/usr/local/lib/node_modules/firebase-tools/lib/utils.js:269:49)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-05-04T23:07:39.176Z] ----------------------------------------------------------------------
+[debug] [2025-05-04T23:07:39.179Z] Command:       /usr/local/bin/node /usr/local/bin/firebase init hosting
+[debug] [2025-05-04T23:07:39.180Z] CLI Version:   14.2.2
+[debug] [2025-05-04T23:07:39.180Z] Platform:      linux
+[debug] [2025-05-04T23:07:39.180Z] Node Version:  v22.15.0
+[debug] [2025-05-04T23:07:39.181Z] Time:          Mon May 05 2025 00:07:39 GMT+0100 (GMT+01:00)
+[debug] [2025-05-04T23:07:39.181Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-04T23:07:39.186Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-04T23:07:39.187Z] > authorizing via signed-in user (projectforum10@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/ayoub/Documents/project
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-04T23:07:40.926Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:07:40.927Z] Checked if tokens are valid: true, expires at: 1746403553899
+[debug] [2025-05-04T23:07:40.929Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-05-04T23:07:49.137Z] *** [apiv2] error from fetch(https://firebase.googleapis.com/v1beta1/projects?pageSize=100, {"headers":{},"method":"GET","signal":{}}): FetchError: request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100 failed, reason: getaddrinfo EAI_AGAIN firebase.googleapis.com
+[debug] [2025-05-04T23:07:49.137Z] Failed to make request to https://firebase.googleapis.com/v1beta1/projects?pageSize=100
+[debug] [2025-05-04T23:07:54.148Z] Error: Timed out.
+    at Timeout._onTimeout (/usr/local/lib/node_modules/firebase-tools/lib/utils.js:269:49)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+[error] 
+[error] Error: An unexpected error has occurred.

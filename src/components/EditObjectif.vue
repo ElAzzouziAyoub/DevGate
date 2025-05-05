@@ -83,31 +83,28 @@ if (!objectif.value) {
   return;
 }
 
-// Supprimer la sous-compétence
-const subskill = objectif.value.subskills[index];  // Sous-compétence à supprimer
+const subskill = objectif.value.subskills[index];
 if (!subskill) {
   console.error("Sous-compétence non trouvée");
   return;
 }
 
-// Si la sous-compétence est marquée comme "done", ajuster la progression
+
 if (subskill.done) {
-  subskill.done = false;  // Mettre à jour l'état "done"
-  objectif.value.progression -= 1 / objectif.value.subskills.length;  // Décrémente la progression
+  subskill.done = false;  
+  objectif.value.progression -= 1 / objectif.value.subskills.length; 
 }
 
-// Supprimer la sous-compétence de la liste
+
 objectif.value.subskills.splice(index, 1);
 
-// Recalculer la progression en fonction des sous-compétences restantes
 objectif.value.progression = objectif.value.subskills.filter(sub => sub.done).length / objectif.value.subskills.length;
 
-// Mettre à jour Firestore avec la nouvelle progression et les sous-compétences
 try {
-  const objectifRef = doc(db, "objectives", objectif.value.id); // Référence du document de l'objectif
+  const objectifRef = doc(db, "objectives", objectif.value.id);
   await updateDoc(objectifRef, {
     progression: objectif.value.progression,
-    subskills: objectif.value.subskills, // Met à jour l'ensemble des sous-compétences
+    subskills: objectif.value.subskills,
   });
   console.log("Mise à jour réussie dans Firestore");
 } catch (error) {
@@ -263,7 +260,6 @@ const handleSubmit= async () => {
   animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
   .createobjectf {
     margin: 1rem;
