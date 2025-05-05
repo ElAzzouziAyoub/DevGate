@@ -68,12 +68,12 @@
     <!-- Modal profil -->
     <div
       v-if="selectedUser"
-      class="modal-overlay"
+      class="container-overlay"
       @click.self="closeModal"
     >
-      <div class="modal">
+      <div class="container">
         <header
-          class="modal-header"
+          class="container-header"
           :style="{ backgroundColor: selectedUser.color || '#4299e1' }"
         >
           <div class="avatar-large">
@@ -86,7 +86,7 @@
           </div>
         </header>
 
-        <div class="modal-body">
+        <div class="container-body">
           <!-- Graphique de progression -->
           <div class="chart-container">
             <h3>GLobal progression </h3>
@@ -125,7 +125,7 @@
           </div>
         </div>
 
-        <button class="modal-close" @click="closeModal">×</button>
+        <button class="container-close" @click="closeModal">×</button>
       </div>
     </div>
   </div>
@@ -305,7 +305,7 @@ async function acceptInvitation(u) {
   await batch.commit()
 }
 
-// View user profile in modal
+// View user profile in container
 function viewProfile(u) {
   selectedUser.value = u
   nextTick(() => {
@@ -339,7 +339,7 @@ function viewProfile(u) {
   })
 }
 
-// Fermer modal
+// Fermer container
 function closeModal() {
   selectedUser.value = null
 }
@@ -431,20 +431,19 @@ function closeModal() {
   .view-btn:hover { background:#e2e8f0; }
   .view-btn:disabled { opacity:.5; cursor:not-allowed; }
   
-  /* Modal */
-  .modal-overlay {
+  .container-overlay {
     position:fixed; inset:0;
     background:rgba(0,0,0,0.5);
     display:flex; align-items:center; justify-content:center;
     z-index:1000;
   }
-  .modal {
+  .container {
     background:#fff; border-radius:12px;
     width:90%; max-width:700px; max-height:90vh;
     overflow-y:auto; position:relative;
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
   }
-  .modal-header {
+  .container-header {
     padding:2rem; color:#fff; text-align:center;
     border-top-left-radius:12px; border-top-right-radius:12px;
   }
@@ -454,7 +453,7 @@ function closeModal() {
     display:flex; align-items:center; justify-content:center;
     margin:0 auto 1rem; font-size:2rem; font-weight:bold;
   }
-  .modal-body { padding:1.5rem; }
+  .container-body { padding:1.5rem; }
   .chart-container { margin-bottom:2rem; }
   .section { margin-bottom:1.5rem; }
   .section h3 { margin-bottom:.5rem; color:#2d3748; }
@@ -463,7 +462,7 @@ function closeModal() {
     padding:.75rem; border-bottom:1px solid #edf2f7;
     display:flex; justify-content:space-between;
   }
-  .modal-close {
+  .container-close {
     position:absolute; top:1rem; right:1rem;
     background:none; border:none; font-size:1.5rem;
     cursor:pointer; color:#fff;

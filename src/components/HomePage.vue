@@ -75,7 +75,7 @@ try {
   });
   const project = projects.value.find(p => p.id === projectID);
   if (project) {
-    window.open(project.link, '_blank'); // open in new tab
+    window.open(project.link, '_blank'); 
   }
 
 } catch (error) {

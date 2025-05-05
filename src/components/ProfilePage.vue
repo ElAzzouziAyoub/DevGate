@@ -602,7 +602,7 @@
   </script>
   
   <style scoped>
-  /* ... (tes styles existants) ... */
+  
   .chart-card {
     position: relative;
     height: 250px;
@@ -680,7 +680,6 @@
     color: #555;
   }
   
-  /* Stats container */
   .stats-contain {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -709,7 +708,7 @@
     margin: 0;
   }
   
-  /* Charts container */
+  
   .charts-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -731,7 +730,8 @@
     text-align: center;
   }
   
-  /* Tabs */
+  
+
   .tabs {
     display: flex;
     justify-content: center;
@@ -761,7 +761,7 @@
     font-weight: 600;
   }
   
-  /* Objectives view (existing styles) */
+  
   .view-objectif {
     max-width: 800px;
     margin: 2rem auto;
@@ -896,16 +896,15 @@
     font-size: 0.95rem;
   }
   
-  /* Projects view */
+  
   .view-projects {
     max-width: 800px;}
-  /* Conteneur principal */
+    
 .view-projects, .view-skills, .view-followings {
   padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* --- Projets --- */
 
 .project-card {
   background: #fff;
@@ -972,7 +971,6 @@
   margin: 1rem 0;
 }
 
-/* Tasks */
 
 .tasks-container {
   margin-top: 1rem;
@@ -1006,7 +1004,7 @@
   text-decoration: line-through;
 }
 
-/* --- Compétences --- */
+
 
 .skills-grid {
   display: grid;
@@ -1048,7 +1046,7 @@
   color: #4a5568;
 }
 
-/* --- Followings --- */
+
 
 .empty-state {
   text-align: center;
