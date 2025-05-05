@@ -1,7 +1,7 @@
 # project
 # Project Membbers
 ```
-Ayoub El Azzouzi - Ilyass Skiriba - Yassine Bourich - Haytem RHallab 
+Ayoub El Azzouzi - Ilyass Skiriba - Yassine Bourich - Haytem Rhallab 
 ```
 
 
